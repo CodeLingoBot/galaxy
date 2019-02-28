@@ -107,7 +107,7 @@ func NewConsulBackend() *ConsulBackend {
 	}
 }
 
-// Check that an app exists and has a config
+// AppExists checks that an app exists and has a config
 func (c *ConsulBackend) AppExists(app, env string) (bool, error) {
 	appCfg, err := c.GetApp(app, env)
 	if err != nil {
@@ -170,7 +170,7 @@ func (c *ConsulBackend) ListApps(env string) ([]App, error) {
 	return apps, nil
 }
 
-// Retrieve the current config for an application
+// GetApp retrieves the current config for an application
 func (c *ConsulBackend) GetApp(app, env string) (App, error) {
 	key := path.Join("galaxy", "apps", env, app)
 	kvp, _, err := c.client.KV().Get(key, nil)
@@ -223,7 +223,7 @@ func (c *ConsulBackend) DeleteApp(app App, env string) (bool, error) {
 	return true, nil
 }
 
-// Add a pool assignment for this app, and update the config.
+// AssignApp adds a pool assignment for this app, and update the config.
 // The pool need not exist, it just won't run until there is a corresponding
 // pool.
 func (c *ConsulBackend) AssignApp(app, env, pool string) (bool, error) {
@@ -246,7 +246,7 @@ func (c *ConsulBackend) AssignApp(app, env, pool string) (bool, error) {
 	return c.UpdateApp(ad, env)
 }
 
-// Remove a pool assignment for this app, and update the config
+// UnassignApp removes a pool assignment for this app, and update the config
 func (c *ConsulBackend) UnassignApp(app, env, pool string) (bool, error) {
 	found := false
 	appCfg, err := c.GetApp(app, env)
@@ -604,7 +604,7 @@ type eventCache struct {
 	seen map[string]uint64
 }
 
-// Return only events we haven't seen
+// Filter returns only events we haven't seen
 func (c *eventCache) Filter(events []*consul.UserEvent) []*consul.UserEvent {
 	c.Lock()
 	defer c.Unlock()
